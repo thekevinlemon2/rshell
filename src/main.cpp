@@ -16,9 +16,17 @@
 
 using namespace std;
 
-bool hasAmpersan = false;
+//dup2 <-- gotta use dis
+//pipe <-- gotta use dat
 
-void getinput(char ** userinput){
+bool hasAmpersan = false;
+bool inRedirect = false;
+bool outRedirect = false;
+bool appRedirect = false;
+bool haspipe = false;
+
+void getinput(char ** userinput)
+{
 	cout<< "$ ";
 	char input[100];
 	int sizearr = 0;
@@ -30,7 +38,6 @@ void getinput(char ** userinput){
 		cin >> input;		// get input
 		if(strcmp(input, "exit") == 0)		// if exit is inputted, terminal ends
 		{
-			//cout << "EXITING NOW" << endl;
 			userinput[sizearr] = NULL;
 			exit(0);
 		}
@@ -38,13 +45,11 @@ void getinput(char ** userinput){
 		{
 			if(i == 0 && input[i] == '#')
 			{
-				//cout << "EARLY HASHY" << endl;
 				earlyhashflag = true;
 				break;
 			}
 			else if(input[i] == '#')
-			{		// loop goes through input and
-				//cout << "mid hashy" << endl;
+			{
 				input[i] = '\0';
 				hashflag = true;
 				break;
@@ -56,6 +61,22 @@ void getinput(char ** userinput){
 			{
 				hasAmpersan = true;
 			}
+		}
+		if(strcmp(input, "<") == 0)
+		{
+			inRedirect = true;
+		}
+		if(strcmp(input, ">") == 0)
+		{
+			outRedirect = true;
+		}
+		if(strcmp(input, ">>") == 0)
+		{
+			appRedirect = true;
+		}
+		if(strcmp(input, "|") == 0)
+		{
+			haspipe = true;
 		}
 		if(!hasAmpersan && !earlyhashflag)
 		{
@@ -85,8 +106,7 @@ void getinput(char ** userinput){
 		cout<< "Input: " << *userinput << endl;
 		userinput++;
 	}
-	cout << "end of array takin" << endl;
-	* */
+	cout << "end of array takin" << endl;*/
 }
 
 
@@ -100,8 +120,66 @@ void run(char ** input)
 	}
 	else if (pid == 0) //child
 	{
-		execvp(input[0], input);
-		perror("child exec failed");
+		char** l = new char*[100]; // used for one side of the redirection (left)
+		char** r = new char*[100]; // used for one side of the redirection (right)
+		bool foundflag = false;
+		
+		if(inRedirect || outRedirect || appRedirect || haspipe){
+			int i =0;
+			int j =0;
+			for(i = 0; *input != NULL; i++){ // loop seperate right & left
+				if(strcmp(*input,"<")==0 || strcmp(*input,">")==0 ||
+					strcmp(*input,">>")==0 || strcmp(*input, "|")==0)
+				{
+					foundflag = true;
+					l[i] = NULL;
+					i = 0;
+					//cout << "redirection found" << endl;
+				}
+				else if(!foundflag){
+					l[i] = *input;
+					//cout << "inputing in left side" << endl;
+				}
+				else if(foundflag){
+					r[j] = *input;
+					j++;
+					//cout << "inputing in right side" << endl;
+				}
+				input++;
+			}
+			//cout << "END OF ARRAY SEPERATION" << endl;
+			r[j] = NULL;
+		}
+		if(inRedirect)
+		{
+			//cout << "inredirect '<'" << endl;
+			freopen(r[0],"r", stdin);
+		}
+		else if(outRedirect)
+		{
+			//cout << "outdirect '>'" << endl;
+			freopen(r[0],"w+",stdout);
+		}
+		else if(appRedirect)
+		{
+			//cout << "appdirect '>>'" << endl;
+			freopen(r[0],"a+",stdout);
+		}
+		else if(haspipe)
+		{
+			cout << "NOT DONE YET WITH PIPING";
+		}
+		if(foundflag) // if special redirection
+		{
+			execvp(l[0],l);
+			//execvp(input[0], input);
+			perror("child exec failed");
+		}
+		else
+		{						// normal making no redirection
+			execvp(input[0], input);
+			perror("child exec failed");
+		}
 	}
 	else //parent function
 	{
@@ -122,12 +200,16 @@ int main (int argc, char *argv[])
 		getinput(command);
 		run(command);
 		int i = 0;
-		while(command[i] != NULL)
+		while(command[i] != NULL)			// empities array for new one
 		{
 			command[i] = NULL;
 			i++;
 		}
 		hasAmpersan = false;
+		inRedirect =false;
+		outRedirect =false;
+		appRedirect =false;
+		haspipe = false;
 	}
 		return 0;
 }
