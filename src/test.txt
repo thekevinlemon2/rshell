@@ -1,0 +1,14 @@
+a.out
+cp.cpp
+hw3.script
+ls.cpp
+main.cpp
+test.txt
+.
+..
+a.out
+cp.cpp
+hw3.script
+ls.cpp
+main.cpp
+test.txt
