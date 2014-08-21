@@ -41,7 +41,7 @@ void getinput(char ** userinput)
 			userinput[sizearr] = NULL;
 			exit(0);
 		}
-		for(int i = 0; i < strlen(input); i++)
+		for(unsigned int i = 0; i < strlen(input); i++)
 		{
 			if(i == 0 && input[i] == '#')
 			{
@@ -55,7 +55,7 @@ void getinput(char ** userinput)
 				break;
 			}
 		}
-		for(int i = 0; i < strlen(input); i++)
+		for(unsigned int i = 0; i < strlen(input); i++)
 		{
 			if(input[i] == '&')
 			{
