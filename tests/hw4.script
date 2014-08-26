@@ -1,0 +1,115 @@
+Script started on Tue 26 Aug 2014 01:09:30 PM PDT
+~
+knguy080@well $ ls
+[0m[01;32ma.out[0m*    [01;34mcs12[0m/  [01;34mDesktop[0m/    [01;32mFirefox_wallpaper.png[0m*  [01;34mPictures[0m/   [0muntitled.cpp[0m
+[01;34mCS100[0m/    [01;34mCS14[0m/  [01;34mDocuments[0m/  [0minput.txt[0m               [01;34mPublic[0m/     [01;34mVideos[0m/
+[01;34mCS100-2[0m/  [01;34mcs61[0m/  [01;34mDownloads[0m/  [01;34mMusic[0m/                  [01;34mTemplates[0m/
+[m~
+knguy080@well $ cd CS100/rshell/src
+~/CS100/rshell/src
+knguy080@well $ g++[K[K[Kg++ main.cpp
+~/CS100/rshell/src
+knguy080@well $ ./a.out
+$ ls #usual tests
+a.out  cp.cpp  hw3.script  ls.cpp  main2.cpp  main.cpp	test.txt
+/class/classes/knguy080/CS100/rshell/src
+$ ls -a
+.      cp.cpp	   main2.cpp			 .nfs00000000004b119900000d5a
+..     hw3.script  main.cpp			 .nfs00000000004b119b00000d61
+a.out  ls.cpp	   .nfs00000000004b119100000d58  test.txt
+/class/classes/knguy080/CS100/rshell/src
+$ ls -r
+test.txt  main.cpp  main2.cpp  ls.cpp  hw3.script  cp.cpp  a.out
+/class/classes/knguy080/CS100/rshell/src
+$ cd .. #currently in src, shoul goback t rshel       to rshell aga    with     with this cmmand
+/class/classes/knguy080/CS100/rshell
+$ cd .. #testing ..  cd with .. again
+/class/classes/knguy080/CS100
+$ ls
+a.out	   LICENSE    rshell	   studyguide.md
+GRADES.md  README.md  sendspam.sh  ucr-cs100
+/class/classes/knguy080/CS100
+$ cd ucr-cs1--   0 100 - #cd'ing INTO a directory
+/class/classes/knguy080/CS100/ucr-cs100
+$ cd #test cd without any directory  , should go home
+/class/classes/knguy080
+$ ls
+a.out	 cs12  Desktop	  Firefox_wallpaper.png  Pictures   untitled.cpp
+CS100	 CS14  Documents  input.txt		 Public     Videos
+CS100-2  cs61  Downloads  Music			 Templates
+/class/classes/knguy080
+$ cd CS100
+/class/classes/knguy080/CS100
+$ cd rshell/src #e testin mult     g multiple directories
+/class/classes/knguy080/CS100/rshell/src
+$ ls
+a.out  cp.cpp  hw3.script  ls.cpp  main2.cpp  main.cpp	test.txt
+/class/classes/knguy080/CS100/rshell/src
+$ cd main.cpp #testing cd into not     so  something that is not a directory
+error with cd: Not a directory
+/class/classes/knguy080/CS100/rshell/src
+$ geany       #now tonn      gonna test ^C flag
+Segmentation fault
+~/CS100/rshell/src
+knguy080@well $ #apparently comments dont work wth not[K[K[K[K[K[K[Kunless theres something in front  oO[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kknguy080@well $ #apparently comments dont work unless theres something in front[Kknguy080@well $ #apparently comments dont work unless theres something in front[Kknguy080@well $ #apparently comments dont work unless theres something in front[Kknguy080@well $ #apparently comments dont work unless theres something in front[Kknguy080@well $ #apparently comments dont work unless theres something in front o_O
+~/CS100/rshell/src
+knguy080@well $ ./a.out
+$ geany &
+/class/classes/knguy080/CS100/rshell/src
+$ ^[[A^[[A^[[A            geany &
+/class/classes/knguy080/CS100/rshell/src
+$ ps
+/class/classes/knguy080/CS100/rshell/src
+$   PID TTY          TIME CMD
+22107 pts/1    00:00:00 bash
+22713 pts/1    00:00:00 a.out
+22764 pts/1    00:00:00 geany
+22765 pts/1    00:00:00 gnome-pty-helpe
+22771 pts/1    00:00:00 ps
+ps
+/class/classes/knguy080/CS100/rshell/src
+$   PID TTY          TIME CMD
+22107 pts/1    00:00:00 bash
+22713 pts/1    00:00:00 a.out
+22771 pts/1    00:00:00 ps <defunct>
+22780 pts/1    00:00:00 ps
+ls
+/class/classes/knguy080/CS100/rshell/src
+$ a.out  cp.cpp  hw3.script  ls.cpp  main2.cpp  main.cpp	test.txt
+cd
+/class/classes/knguy080
+$ #^C flagg    successfully stopped bacground      kground proccess withot interrupting terminal but output got a bit funky and did not sipla     display the $ as s usual. C cd to home fixes this poblem     roblem
+Segmentation fault
+~/CS100/rshell/src
+knguy080@well $ ./a.out
+$ ls
+a.out  cp.cpp  hw3.script  ls.cpp  main2.cpp  main.cpp	test.txt
+/class/classes/knguy080/CS100/rshell/src
+$ cd
+/class/classes/knguy080
+$ ls
+a.out	 cs12  Desktop	  Firefox_wallpaper.png  Pictures   untitled.cpp
+CS100	 CS14  Documents  input.txt		 Public     Videos
+CS100-2  cs61  Downloads  Music			 Templates
+/class/classes/knguy080
+$ cd CS100/rshell/src
+/class/classes/knguy080/CS100/rshell/src
+$ ls
+a.out  cp.cpp  hw3.script  ls.cpp  main2.cpp  main.cpp	test.txt
+/class/classes/knguy080/CS100/rshell/src
+$ geany &
+/class/classes/knguy080/CS100/rshell/src
+$ 
+[1]+  Stopped                 ./a.out
+~/CS100/rshell/src
+knguy080@well $ #ctrl[K[K[K[K^Z flag does not work[Kk as intended
+~/CS100/rshell/src
+knguy080@well $ exit
+exit
+There are stopped jobs.
+~/CS100/rshell/src
+knguy080@well $ exit
+exit
+
+Script done on Tue 26 Aug 2014 01:31:16 PM PDT

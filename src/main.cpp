@@ -16,15 +16,76 @@
 
 using namespace std;
 
-//dup2 <-- gotta use dis
-//pipe <-- gotta use dat
-
 bool hasAmpersan = false;
 bool inRedirect = false;
 bool outRedirect = false;
 bool appRedirect = false;
 bool haspipe = false;
 
+char *patherino(char *pathname)
+{
+	char *path = getenv(pathname);
+	if (path == NULL)
+	{
+		perror("error getting path");
+		return NULL;
+	}
+	else
+	{
+		return path;
+	}
+}
+
+void cd(char** userinput)
+{
+	if (userinput[1] == NULL) //user only inputted "cd," go home
+	{
+		int num = chdir(getenv("HOME"));
+
+		if (num == -1)
+		{
+
+			perror("error with cd");
+		}
+
+		return;
+	}
+	else
+	{
+
+		int num = chdir(userinput[1]);
+
+		if (num == -1)
+		{
+
+			perror("error with cd");
+		}
+		return;
+	}
+}
+
+void sighandlur(int siggywithit)
+{
+	if (siggywithit == 2) //user inputted ^C (SIGINT)
+	{
+		//cout<<"can't exit with that foo" <<endl;
+		return;
+	}
+	if (siggywithit == 18 || siggywithit == 20 || siggywithit == 24) //user inputted ^Z (SIGTSTP)
+	{
+		cout<<"not supposed to go here" <<endl;
+		//pause foreground proccessssssss
+	}
+}
+
+void sighandlur_z(int siggyiz)
+{
+	int pid = getpid();
+	kill(pid, SIGSTOP); //but this worked in lab T_T
+}
+	
+	
+	
 void getinput(char ** userinput)
 {
 	cout<< "$ ";
@@ -198,7 +259,25 @@ int main (int argc, char *argv[])
 	{
 		char * command[100];
 		getinput(command);
-		run(command);
+
+		if (signal(SIGINT, sighandlur) == SIG_ERR)
+		{
+			perror ("signal error");
+		}
+		/*
+		if (signal(SIGTSTP, sighandlur_z) == SIG_ERR)
+		{
+			perror("^Z signal error");
+		}
+		*/
+		if (strcmp(command[0], "cd") == 0)
+		{
+			cd(command);
+		}
+		else
+		{
+			run(command);
+		}
 		int i = 0;
 		while(command[i] != NULL)			// empities array for new one
 		{
@@ -210,6 +289,15 @@ int main (int argc, char *argv[])
 		outRedirect =false;
 		appRedirect =false;
 		haspipe = false;
+		char output[70];
+		if (getcwd(output, sizeof(output)) == NULL)
+		{
+			perror("displaying directory error");
+		}
+		else 
+		{
+			cout<<output <<endl;
+		}
 	}
-		return 0;
+	return 0;
 }
