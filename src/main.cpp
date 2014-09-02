@@ -21,6 +21,9 @@ bool inRedirect = false;
 bool outRedirect = false;
 bool appRedirect = false;
 bool haspipe = false;
+char username[100] = {0};
+char hostname[100] = {0};
+
 
 char *patherino(char *pathname)
 {
@@ -88,7 +91,10 @@ void sighandlur_z(int siggyiz)
 	
 void getinput(char ** userinput)
 {
-	cout<< "$ ";
+	getlogin_r(username, sizeof(username));
+	gethostname(hostname,sizeof(hostname));
+	cout<<username <<"@" <<hostname;
+	cout<< " $ ";
 	char input[100];
 	int sizearr = 0;
 	bool hashflag = false;
@@ -264,15 +270,22 @@ int main (int argc, char *argv[])
 		{
 			perror ("signal error");
 		}
-		/*
+		
 		if (signal(SIGTSTP, sighandlur_z) == SIG_ERR)
 		{
 			perror("^Z signal error");
 		}
-		*/
 		if (strcmp(command[0], "cd") == 0)
 		{
 			cd(command);
+		}
+		if (strcmp(command[0], "fg") == 0)
+		{
+			//run foreground proccess?
+		}
+		if (strcmp(command[0], "bg") == 0)
+		{
+			//run background proshess;
 		}
 		else
 		{

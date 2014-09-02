@@ -14,9 +14,13 @@
 
 using namespace std;
 
+bool aflag = false;
+bool lflag = false;
+bool rflag = false;
+vector<string> inputs;
+
 int execute(string input)
 {
-    
     struct stat buff;
     struct stat path;
     struct passwd *pw;
@@ -42,7 +46,7 @@ int execute(string input)
 		case S_IFSOCK: filetype = "socket";                  break;
 		default:       filetype = "unknown";                break;
 	}
-	DIR *dirp;
+	//DIR *dirp;
     //struct dirent *dp;    
     
     //dirp = opendir(c);
@@ -58,15 +62,13 @@ int execute(string input)
     {
         stat(input.c_str(), &buff);
         string x = ctime(&buff.st_mtime);
-        //string str = ti.substr(4,12);
-		string str = x.substr();
+		string str = x.substr(4,12);
 
         string user = "";
         string group = "";
         
         int ct1 = 0;
         int ct2 = 0;
-        
         if((grp = getgrgid(buff.st_gid))!= NULL)
         {
             group = grp->gr_name;
@@ -76,67 +78,80 @@ int execute(string input)
         {
             user = pw->pw_name;
         }
-
+        
         if(S_ISDIR(buff.st_mode))
-        {
-            cout <<"d";
             ct1++;
-        }
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IRUSR)
-            cout <<"r";
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IWUSR)
-            cout <<"w";
-        else
-            cout <<"-";
         if(buff.st_mode & S_IXUSR)
-        {
-            cout <<"x";
             ct2++;
+        if(lflag){
+            if(S_ISDIR(buff.st_mode))
+            {
+                cout <<"d";
+                //ct1++;
+            }
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IRUSR)
+                cout <<"r";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IWUSR)
+                cout <<"w";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IXUSR)
+            {
+                cout <<"x";
+                //ct2++;
+            }
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IRGRP)
+                cout <<"r";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IWGRP)
+                cout <<"w";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IXGRP)
+                cout <<"x";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IROTH)
+                cout <<"r";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IWOTH)
+                cout <<"w";
+            else
+                cout <<"-";
+            if(buff.st_mode & S_IXOTH)
+                cout <<"x";
+            else
+                cout <<"-";
+            cout <<right <<buff.st_nlink <<" " <<setw(5) <<right <<user
+                 <<setw(1) <<" " <<group <<" " <<setw(5) <<buff.st_size
+                 <<" " << str <<" " <<input;
         }
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IRGRP)
-            cout <<"r";
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IWGRP)
-            cout <<"w";
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IXGRP)
-            cout <<"x";
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IROTH)
-            cout <<"r";
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IWOTH)
-            cout <<"w";
-        else
-            cout <<"-";
-        if(buff.st_mode & S_IXOTH)
-            cout <<"x";
-        else
-            cout <<"-";
-        cout <<right <<buff.st_nlink <<" " <<setw(4) <<right <<user
-             <<setw(1) <<" " <<group <<" " <<setw(4) <<buff.st_size
-             <<" " <<str <<" " <<input;
+        else{
+            cout << input;
+        }
         if(ct1 == 1)
             cout <<"/";
-        else if(ct2 == 1)
+        if(ct2 == 1)
             cout <<"*";
-        cout <<endl;
+        if(lflag){
+            cout <<endl;
+        }
+        else{
+            cout << "  ";
+        }
     }
     
 
     if(filetype == "directory")
     {
-        cout <<input <<":" <<endl;
         DIR *dirp;
         struct dirent *d;
         vector<string> vektor;
@@ -147,7 +162,7 @@ int execute(string input)
         
         if(dirp == NULL) 
         {
-            cerr <<"Cannot open" <<entry <<", exiting" <<endl;
+            cerr <<"Cannot open" <<entry <<endl;
             return -1;
         }
         
@@ -156,8 +171,6 @@ int execute(string input)
         int block = 0;
         //for formatting
 
-        d = readdir(dirp);
-        d = readdir(dirp);
         d = readdir(dirp);
         //output was off
         
@@ -170,9 +183,8 @@ int execute(string input)
             strcat(ch, "/");
             strcat(ch, d->d_name);
 
-            if(d->d_name[0] != '.')
-            {
-				names.push_back(d->d_name);
+            if(d->d_name[0] != '.' || aflag){
+                names.push_back(d->d_name);
                 vektor.push_back(ch);
                 if ((stat(ch, &path)) == -1) 
                 {
@@ -193,10 +205,15 @@ int execute(string input)
             }
             d = readdir(dirp);        
         }
-        
+        /*if(vektor.size() == 0 && directories.size() == 0)
+        {
+            return 0;
+        }*/
         //sorts everything
         sort(vektor.begin(),vektor.end());
-        
+        if(rflag){
+            reverse(vektor.begin(), vektor.end());
+        }
         //formats spacing
         while(bits != 0)
         {
@@ -205,16 +222,22 @@ int execute(string input)
         }
         
         sort(names.begin(),names.end());
-        sort(directories.begin(), directories.end());
+        if(rflag){
+            reverse(names.begin(), names.end());
+        }
+        //sort(directories.begin(), directories.end());
         
         //output info
-        cout <<"total " <<block/2 <<endl;    
+        if(inputs.size() != 0) cout <<input <<":" <<endl;
+        if(lflag){
+            cout <<"total " <<block/2 <<endl;
+        }
         for(unsigned i =0; i< vektor.size(); i++)
         {
             stat(vektor.at(i).c_str(), &path);
             string a = ctime(&path.st_mtime);
-            int f = 0;
-            string str = a.substr();
+            //int f = 0;
+            string str = a.substr(4,12);
             int c3 = 0;
             int c4 = 0;
             string user = "";
@@ -229,90 +252,138 @@ int execute(string input)
             {
                 group = grp->gr_name;
             }
-            if(S_ISDIR(path.st_mode)){
-                cout <<"d";
+            if(S_ISDIR(path.st_mode))
                 c3++;
-            }
-            else
-                cout <<"-";
-            if(path.st_mode & S_IRUSR)
-                cout <<"r";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IWUSR)
-                cout <<"w";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IXUSR){
-                cout <<"x";
+            if(path.st_mode & S_IXUSR)
                 c4++;
+            if(lflag)
+            {
+                if(S_ISDIR(path.st_mode))
+                    cout <<"d";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IRUSR)
+                    cout <<"r";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IWUSR)
+                    cout <<"w";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IXUSR)
+                    cout <<"x";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IRGRP)
+                    cout <<"r";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IWGRP)
+                    cout <<"w";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IXGRP)
+                    cout <<"x";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IROTH)
+                    cout <<"r";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IWOTH)
+                    cout <<"w";
+                else
+                    cout <<"-";
+                if(path.st_mode & S_IXOTH)
+                    cout <<"x";
+                else
+                    cout <<"-";
+                cout <<" ";
+                cout <<right <<path.st_nlink <<" " <<setw(4) <<right <<user
+                     <<setw(1) <<" " <<group <<" " <<setw(indent)
+                     <<path.st_size <<" " <<str <<" " <<names.at(i);
             }
             else
-                cout <<"-";
-            if(path.st_mode & S_IRGRP)
-                cout <<"r";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IWGRP)
-                cout <<"w";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IXGRP)
-                cout <<"x";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IROTH)
-                cout <<"r";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IWOTH)
-                cout <<"w";
-            else
-                cout <<"-";
-            if(path.st_mode & S_IXOTH)
-                cout <<"x";
-            else
-                cout <<"-";
-            cout <<" ";
-            cout <<right <<path.st_nlink <<" " <<setw(4) <<right 
-            <<user
-                 <<setw(1) <<" " <<group <<" " <<setw(indent)
-                 <<path.st_size <<" " <<str <<" " <<names.at(i);
+            {
+                cout << names.at(i);
+            }
             if(c3 == 1)
                 cout <<"/";
             else if(c4 == 1)
                 cout <<"*";
-            cout <<endl;
+            if(lflag)
+                cout <<endl;
+            else
+                cout << "  ";
         }
-        cout <<endl;
         
-        
-        //recursive  
-        for(unsigned i = 0; i < directories.size(); i++)
-        {
-            execute(directories.at(i).c_str());
-        }
         closedir(dirp);
 
     }
+    cout << endl;
     return 0;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) 
 {
+    char* found;        //will be used to see if -a,l,R is found
     if (argc >= 2)
     {
         for(int i =1; i < argc; i++)
         {
-            //prints all
-            execute(argv[i]);
+            found = strchr(argv[i], '-');
+            //cout << argv[i]-found << endl;
+            if(0 == argv[i]-found) // if '-' is found
+            {
+                if(strchr(argv[i], 'a') != NULL)
+                {           // if -a is found
+                    aflag = true;
+                    //cout << "a flag is true" << endl;
+                }
+                if(strchr(argv[i], 'l') != NULL)
+                {
+                    lflag = true;
+                    //cout << "l flag is true" << endl;
+                }
+                if(strchr(argv[i], 'R') != NULL)
+                {
+                    rflag = true;
+                    //cout << "r flag is true" << endl;
+                }
+                for(unsigned int j = 1; j < strlen(argv[i]); j++){
+                    if((argv[i])[j] != 'a' && (argv[i])[j] != 'l' &&
+                       (argv[i])[j] != 'R'){
+                        cout << "Invalid flags" << endl;
+                        return 1;
+                    }
+                }
+            }
+            else
+            {
+                // everything else is considered a file/dir name
+                inputs.push_back(argv[i]);
+            }
+        }
+        if(inputs.size() == 0)
+        {
+            execute(".");
+        }
+        else
+        {
+            sort(inputs.begin(), inputs.end());
+            if(rflag){
+                reverse(inputs.begin(), inputs.end());
+            }
+            for(unsigned int i = 0; i < inputs.size(); i++)
+            {
+                execute(inputs.at(i));
+            }
         }
     }
     if(argc == 1)
     {
-        //print out all in current
+        //print out regular ls
         execute(".");
     }
     return 0;
 }
-
